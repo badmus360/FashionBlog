@@ -11,7 +11,6 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-
-//    Post savePost(PostDto postDto);
+//    Post deleteById(Post post);
 
 }

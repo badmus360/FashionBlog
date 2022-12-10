@@ -11,6 +11,9 @@ import lombok.ToString;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.example.week9sq12360.repository.AdminRepository;
+
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class AdminServiceImpl implements AdminService{
@@ -29,8 +32,6 @@ public class AdminServiceImpl implements AdminService{
         }
         Admin adminEntityToSave = new Admin();
         BeanUtils.copyProperties(adminDto, adminEntityToSave);
-        System.out.println(adminEntityToSave);
-//      Admin adminEntityCreated = adminRepository.save(adminEntityToSave);
         adminRepository.save(adminEntityToSave);
         return "created";
     }
@@ -48,4 +49,34 @@ public class AdminServiceImpl implements AdminService{
         BeanUtils.copyProperties(createdPost, postResponse);
         return postResponse;
     }
+
+    @Override
+    public PostResponse updatePost(PostDto postDto, Long postId) {
+
+        Optional<Post> postOptional = postRepository.findById(postId);
+        if(postOptional.isPresent())
+        {
+            Post post = postOptional.get();
+            BeanUtils.copyProperties(postDto, post);
+            Post updatedPost = postRepository.save(post);
+            PostResponse postResponse = new PostResponse();
+            BeanUtils.copyProperties(updatedPost, postResponse);
+            return postResponse;
+        }
+        throw new RuntimeException("Update ERROR!!!");
+    }
+
+    @Override
+    public PostResponse deletePost(Long postId) {
+
+        Optional<Post> postOptional = postRepository.findById(postId);
+        if(postOptional.isPresent())
+        {
+            Post post = postOptional.get();
+            postRepository.deleteById(post.getId());
+        }
+        throw new RuntimeException("Post does not EXIST!!!");
+    }
+
+
 }
